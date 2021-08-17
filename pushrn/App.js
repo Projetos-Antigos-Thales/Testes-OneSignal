@@ -1,61 +1,43 @@
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import React, { useEffect } from 'react';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View, } from 'react-native';
+import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions, } from 'react-native/Libraries/NewAppScreen';
+import { WebView } from 'react-native-webview';
+import OneSignal from 'react-native-onesignal';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+export default function App() {
 
-import { WebView } from 'react-native-webview'
-
-const Section = ({children, title}): Node => {
+  // Design
   const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  //OneSignal Init Code
+  OneSignal.setLogLevel(6, 0);
+  OneSignal.setAppId("65ad2e55-b57d-4730-802c-f48ca0ba6773");
+
+  //iOS
+  OneSignal.promptForPushNotificationsWithUserResponse(response => {
+    console.log("Prompt response:", response);
+  });
+
+  OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent => {
+    console.log("OneSignal: notification will show in foreground:", notificationReceivedEvent);
+    let notification = notificationReceivedEvent.getNotification();
+    console.log("notification: ", notification);
+    const data = notification.additionalData
+    console.log("additionalData: ", data);
+    notificationReceivedEvent.complete(notification);
+  });
+
+  OneSignal.setNotificationOpenedHandler(notification => {
+    // console.log("OneSignal: notification opened:", notification);
+  });
+
   return (
     <WebView source={{ uri: 'https://organizatudo.netlify.app/login' }} />
   );
+
 };
 
 const styles = StyleSheet.create({
@@ -76,5 +58,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
-
-export default App;
