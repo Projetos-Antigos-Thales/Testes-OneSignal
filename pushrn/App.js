@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View, } from 'react-native';
 import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions, } from 'react-native/Libraries/NewAppScreen';
 import { WebView } from 'react-native-webview';
+import Video from 'react-native-video';
 import OneSignal from 'react-native-onesignal';
 
 export default function App() {
@@ -35,26 +36,27 @@ export default function App() {
   });
 
   return (
-    <WebView source={{ uri: 'https://organizatudo.netlify.app/login' }} />
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <Video style={styles.video}
+          shouldPlay
+          source={require('./assets/splash-screen.mp4')}
+          volume={10} />
+      </View>
+      <View style={{ flex: 1 }}>
+        <WebView source={{ uri: 'https://organizatudo.netlify.app/login' }} />
+      </View >
+    </View >
   );
 
 };
 
+
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
+  video: {
+    margin: 60,
+    marginTop: 80,
+    height: 512,
+    width: 512,
+  }
 });
